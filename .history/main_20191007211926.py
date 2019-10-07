@@ -152,7 +152,7 @@ class GeneticAlgorithm():
 #is mating pool size also a hyperparameter???????
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', type=str, default="rl11849.tsp", help="path to the input file")
+    parser.add_argument('-p', type=str, default="burma14.tsp", help="path to the input file")
     parser.add_argument('-s', type=int, default=50, help="population size")
     parser.add_argument('-ms', type=int, default=25, help="mating pool size")
     parser.add_argument('-ts', type=int, default=5, help="tournament size")

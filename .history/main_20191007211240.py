@@ -86,19 +86,13 @@ class GeneticAlgorithm():
         # RSM mutation
         if random.random() < self.mutation_rate:
             route = instance.route.copy()
-            # old = route.copy()
             li = 0
             hi = 0
             while hi <= li:
                 li = int(random.random() * len(route)) 
                 hi = int(random.random() * len(route))
-            while li < hi:
+            while li < hi
                 route[li], route[hi] = route[hi], route[li]
-                li += 1
-                hi -= 1
-            # print(old == route)
-            # for (o, n) in zip(old, route):
-            #     print(f"{o} | {n}")
             return Instance(route)
         return instance
 
@@ -152,7 +146,7 @@ class GeneticAlgorithm():
 #is mating pool size also a hyperparameter???????
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', type=str, default="rl11849.tsp", help="path to the input file")
+    parser.add_argument('-p', type=str, default="a280.tsp", help="path to the input file")
     parser.add_argument('-s', type=int, default=50, help="population size")
     parser.add_argument('-ms', type=int, default=25, help="mating pool size")
     parser.add_argument('-ts', type=int, default=5, help="tournament size")

@@ -2,7 +2,6 @@ import argparse
 import math
 import random
 import operator
-import sys
 
 class City():
     def __init__(self, index, x_coord, y_coord):
@@ -24,9 +23,6 @@ class Instance():
         self.route_distance = self.get_route_distance()
         self.fitness = self.get_fitness()
 
-    def __repr__(self):
-        return "[" + str(self.route_distance) + ", " + str(self.fitness) + "]"
-
     def get_route_distance(self):
         distance = 0
         for i in range(len(self.route)):
@@ -46,7 +42,7 @@ class GeneticAlgorithm():
         self.elite_size = elite_size
         self.max_generations = max_generations
         self.crossover_rate = crossover_rate
-        self.mutation_rate = mutation_rate 
+        self.mutation_rate = mutation_rate
         self.cities_list = cities_list
 
     def generate_instance(self):
@@ -82,33 +78,14 @@ class GeneticAlgorithm():
         child = Instance(child_route)
         return child
 
-    def mutate(self, instance):  #mutation operator is weak. increase mutation rate 
-        # RSM mutation
+    def mutate(self, instance):
+        route = instance.route
         if random.random() < self.mutation_rate:
-            route = instance.route.copy()
-            # old = route.copy()
-            li = 0
-            hi = 0
-            while hi <= li:
-                li = int(random.random() * len(route)) 
-                hi = int(random.random() * len(route))
-            while li < hi:
-                route[li], route[hi] = route[hi], route[li]
-                li += 1
-                hi -= 1
-            # print(old == route)
-            # for (o, n) in zip(old, route):
-            #     print(f"{o} | {n}")
-            return Instance(route)
-        return instance
-
-        # mutation by swapping
-        # if random.random() < self.mutation_rate:
-        #     route = instance.route.copy()
-        #     i1, i2 = random.sample(range(len(self.cities_list)), 2)
-        #     route[i1], route[i2] = route[i2], route[i1]
-        #     return Instance(route)
-        # return instance
+            i1, i2 = random.sample(range(len(self.cities_list)), 2)
+            route[i1], route[i2] = route[i2], route[i1]
+        instance.route = route
+        instance.get_route_distance()
+        instance.get_fitness()
 
     def selection(self, population):
         #experiment on selection way
@@ -127,7 +104,7 @@ class GeneticAlgorithm():
         shortest_ever = float("inf")
         # Step 2. Evaluate the fitness of each chromosome. done in create population
         for generation in range(self.max_generations):
-            # Step 3. Choose P/2 parents from the current population.
+            # Step 3. Choose P/2 parents from the current population via proportional selection.
             mating_pool = self.selection(population)
             population_sorted = sorted(population, key=lambda instance: instance.fitness, reverse=True)
             old_elite = population_sorted[:self.elite_size]
@@ -137,7 +114,7 @@ class GeneticAlgorithm():
                 parents = random.sample(mating_pool, 2)
                 child = self.crossover(parents[0], parents[1])
                 # Step 5. Apply mutation operators for minor changes in the results.
-                child = self.mutate(child)
+                self.mutate(child)
                 new_population.append(child)
                 # Step 6. Repeat Steps  4 and 5 until all parents are selected and mated.
             # Step 7. Replace old population of chromosomes with new one.
@@ -152,14 +129,14 @@ class GeneticAlgorithm():
 #is mating pool size also a hyperparameter???????
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', type=str, default="rl11849.tsp", help="path to the input file")
+    parser.add_argument('-p', type=str, default="a280.tsp", help="path to the input file")
     parser.add_argument('-s', type=int, default=50, help="population size")
     parser.add_argument('-ms', type=int, default=25, help="mating pool size")
     parser.add_argument('-ts', type=int, default=5, help="tournament size")
     parser.add_argument('-e', type=int, default=15, help="elite_size")
     parser.add_argument('-mg', type=int, default=50, help="max generations")
     parser.add_argument('-cr', type=float, default=0.3, help="crossover rate")
-    parser.add_argument('-mr', type=float, default=0.3, help="mutation rate")
+    parser.add_argument('-mr', type=float, default=0.1, help="mutation rate")
     args = parser.parse_args()
     return args.p, args.s, args.ms, args.ts, args.e, args.mg, args.cr, args.mr
 
@@ -196,6 +173,7 @@ def main():
     #####
     coordinates_list = parse(path)
     cities_list = create_cities(coordinates_list)
+
     gen_algo = GeneticAlgorithm(population_size, mat_pool_size, tournament_size, elite_size, max_generations, crossover_rate, mutation_rate, cities_list)
     distance = gen_algo.generate_path()
     print(distance)
