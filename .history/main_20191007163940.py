@@ -6,8 +6,8 @@ import operator
 class City():
     def __init__(self, index, x_coord, y_coord):
         self.index = index
-        self.x_coord = float(x_coord)
-        self.y_coord = float(y_coord)
+        self.x_coord = x_coord
+        self.y_coord = y_coord
 
     def __repr__(self):
         return "[" + str(self.x_coord) + ", " + str(self.y_coord) + "]"
@@ -119,7 +119,7 @@ class GeneticAlgorithm():
             # Step 8. Evaluate the fitness of each chromosome in the new population. Already done in crossover when creating the child
             # Step 9. Terminate if the number of generations meets some upper bound; otherwise go to Step  3.
             shortest_ever = min(population_sorted[0].route_distance, shortest_ever)
-            print(f"generation {generation}  |  fittest {population_sorted[0].fitness}   |  avg_fitness {sum(instance.fitness for instance in population_sorted)/len(population_sorted)}")
+            print(f"generation {generation}  |  fittest {population_sorted[0].fitness}   |  avg_fitness {sum(instance.fitness for instance in population_sorted)/len(self.population_size)}")
         return shortest_ever
 
 # parses command line arguments

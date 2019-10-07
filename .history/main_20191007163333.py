@@ -6,8 +6,8 @@ import operator
 class City():
     def __init__(self, index, x_coord, y_coord):
         self.index = index
-        self.x_coord = float(x_coord)
-        self.y_coord = float(y_coord)
+        self.x_coord = x_coord
+        self.y_coord = y_coord
 
     def __repr__(self):
         return "[" + str(self.x_coord) + ", " + str(self.y_coord) + "]"
@@ -98,7 +98,6 @@ class GeneticAlgorithm():
     def generate_path(self):
         # Step 1. Create an initial population of P chromosomes.
         population = self.create_initial_population()
-        shortest_ever = float("inf")
         # Step 2. Evaluate the fitness of each chromosome. done in create population
         for generation in range(self.max_generations):
             # Step 3. Choose P/2 parents from the current population via proportional selection.
@@ -118,9 +117,8 @@ class GeneticAlgorithm():
             population = new_population
             # Step 8. Evaluate the fitness of each chromosome in the new population. Already done in crossover when creating the child
             # Step 9. Terminate if the number of generations meets some upper bound; otherwise go to Step  3.
-            shortest_ever = min(population_sorted[0].route_distance, shortest_ever)
-            print(f"generation {generation}  |  fittest {population_sorted[0].fitness}   |  avg_fitness {sum(instance.fitness for instance in population_sorted)/len(population_sorted)}")
-        return shortest_ever
+            print(f"generation {generation}  |  fittest {population_sorted[0].fitness}   |  avg_fitness {sum(instance.fitness for instance in population_sorted)/len(self.population_size)}")
+        return 0
 
 # parses command line arguments
 #is mating pool size also a hyperparameter???????
@@ -130,7 +128,7 @@ def parse_arguments():
     parser.add_argument('-s', type=int, default=50, help="population size")
     parser.add_argument('-ms', type=int, default=25, help="mating pool size")
     parser.add_argument('-ts', type=int, default=5, help="tournament size")
-    parser.add_argument('-e', type=int, default=15, help="elite_size")
+    parser.add_argument('-e', type=int, default=20, help="elite_size")
     parser.add_argument('-mg', type=int, default=50, help="max generations")
     parser.add_argument('-cr', type=float, default=0.3, help="crossover rate")
     parser.add_argument('-mr', type=float, default=0.1, help="mutation rate")
@@ -172,8 +170,8 @@ def main():
     cities_list = create_cities(coordinates_list)
 
     gen_algo = GeneticAlgorithm(population_size, mat_pool_size, tournament_size, elite_size, max_generations, crossover_rate, mutation_rate, cities_list)
-    distance = gen_algo.generate_path()
-    print(distance)
+    # distance = gen_algo.generate_path()
+    # print(distance)
 
 if __name__ == "__main__":
     main()

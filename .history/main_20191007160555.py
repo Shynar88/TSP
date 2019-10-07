@@ -6,8 +6,8 @@ import operator
 class City():
     def __init__(self, index, x_coord, y_coord):
         self.index = index
-        self.x_coord = float(x_coord)
-        self.y_coord = float(y_coord)
+        self.x_coord = x_coord
+        self.y_coord = y_coord
 
     def __repr__(self):
         return "[" + str(self.x_coord) + ", " + str(self.y_coord) + "]"
@@ -78,8 +78,7 @@ class GeneticAlgorithm():
         child = Instance(child_route)
         return child
 
-    def mutate(self, instance):
-        instance = instance.route
+    def mutation(self, instance):
         if random.random() < self.mutation_rate:
             i1, i2 = random.sample(range(len(self.cities_list)), 2)
             instance[i1], instance[i2] = instance[i2], instance[i1]
@@ -95,32 +94,30 @@ class GeneticAlgorithm():
             mating_pool.append(fittest)
         return mating_pool
 
+    def get_elite(self):
+
+
     def generate_path(self):
         # Step 1. Create an initial population of P chromosomes.
         population = self.create_initial_population()
-        shortest_ever = float("inf")
         # Step 2. Evaluate the fitness of each chromosome. done in create population
-        for generation in range(self.max_generations):
+        for _ in range(self.max_generations):
             # Step 3. Choose P/2 parents from the current population via proportional selection.
             mating_pool = self.selection(population)
-            population_sorted = sorted(population, key=lambda instance: instance.fitness, reverse=True)
-            old_elite = population_sorted[:self.elite_size]
+            old_elite = self.get_elite()
             new_population = old_elite
-            while len(new_population) < self.population_size:
-                # Step 4. Randomly select two parents to create offspring using crossover operator.
-                parents = random.sample(mating_pool, 2)
-                child = self.crossover(parents[0], parents[1])
-                # Step 5. Apply mutation operators for minor changes in the results.
-                self.mutate(child)
-                new_population.append(child)
-                # Step 6. Repeat Steps  4 and 5 until all parents are selected and mated.
+            # Step 4. Randomly select two parents to create offspring using crossover operator.
+            
+            # Step 5. Apply mutation operators for minor changes in the results.
+
+            # Step 6. Repeat Steps  4 and 5 until all parents are selected and mated.
+
             # Step 7. Replace old population of chromosomes with new one.
-            population = new_population
-            # Step 8. Evaluate the fitness of each chromosome in the new population. Already done in crossover when creating the child
+
+            # Step 8. Evaluate the fitness of each chromosome in the new population.
+
             # Step 9. Terminate if the number of generations meets some upper bound; otherwise go to Step  3.
-            shortest_ever = min(population_sorted[0].route_distance, shortest_ever)
-            print(f"generation {generation}  |  fittest {population_sorted[0].fitness}   |  avg_fitness {sum(instance.fitness for instance in population_sorted)/len(population_sorted)}")
-        return shortest_ever
+        return 0
 
 # parses command line arguments
 #is mating pool size also a hyperparameter???????
@@ -130,7 +127,7 @@ def parse_arguments():
     parser.add_argument('-s', type=int, default=50, help="population size")
     parser.add_argument('-ms', type=int, default=25, help="mating pool size")
     parser.add_argument('-ts', type=int, default=5, help="tournament size")
-    parser.add_argument('-e', type=int, default=15, help="elite_size")
+    parser.add_argument('-e', type=int, default=20, help="elite_size")
     parser.add_argument('-mg', type=int, default=50, help="max generations")
     parser.add_argument('-cr', type=float, default=0.3, help="crossover rate")
     parser.add_argument('-mr', type=float, default=0.1, help="mutation rate")
@@ -172,8 +169,8 @@ def main():
     cities_list = create_cities(coordinates_list)
 
     gen_algo = GeneticAlgorithm(population_size, mat_pool_size, tournament_size, elite_size, max_generations, crossover_rate, mutation_rate, cities_list)
-    distance = gen_algo.generate_path()
-    print(distance)
+    # distance = gen_algo.generate_path()
+    # print(distance)
 
 if __name__ == "__main__":
     main()
