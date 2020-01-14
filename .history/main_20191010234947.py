@@ -148,6 +148,7 @@ class GeneticAlgorithm():
                 shortest_ever_route = population_sorted[0].route
             f.write(f'{generation} {population_sorted[0].fitness}') 
             f.write('\n')
+            print(f"generation {generation}  |  fittest {population_sorted[0].fitness}   |  avg_fitness {sum(instance.fitness for instance in population_sorted)/len(population_sorted)}")
         write_csv(shortest_ever_route)
         return shortest_ever   
 
@@ -192,6 +193,16 @@ def create_cities(coordinates_list):
 
 def main():
     path, population_size, mat_pool_size, tournament_size, elite_size, max_generations, crossover_rate, mutation_rate = parse_arguments()
+    #delete prints
+    print(path)
+    print(population_size) 
+    print(mat_pool_size)
+    print(tournament_size)
+    print(elite_size) 
+    print(max_generations) 
+    print(crossover_rate) 
+    print(mutation_rate)
+    #####
     coordinates_list = parse(path)
     cities_list = create_cities(coordinates_list)
     gen_algo = GeneticAlgorithm(population_size, mat_pool_size, tournament_size, elite_size, max_generations, crossover_rate, mutation_rate, cities_list)

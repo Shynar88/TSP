@@ -118,8 +118,6 @@ class GeneticAlgorithm():
         return mating_pool
 
     def generate_path(self):
-        #for logging
-        f = open('logs.log', mode='w+')
         # Step 1. Create an initial population of P chromosomes.
         population = self.create_initial_population()
         shortest_ever = float("inf")
@@ -146,10 +144,9 @@ class GeneticAlgorithm():
             if population_sorted[0].route_distance < shortest_ever:
                 shortest_ever = population_sorted[0].route_distance
                 shortest_ever_route = population_sorted[0].route
-            f.write(f'{generation} {population_sorted[0].fitness}') 
-            f.write('\n')
+            print(f"generation {generation}  |  fittest {population_sorted[0].fitness}   |  avg_fitness {sum(instance.fitness for instance in population_sorted)/len(population_sorted)}")
         write_csv(shortest_ever_route)
-        return shortest_ever   
+        return shortest_ever
 
 def write_csv(route):
     with open('solution.csv', mode='w+') as f:
@@ -161,10 +158,10 @@ def write_csv(route):
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', type=str, default="a280.tsp", help="path to the input file")
-    parser.add_argument('-s', type=int, default=300, help="population size")
-    parser.add_argument('-ms', type=int, default=150, help="mating pool size")
+    parser.add_argument('-s', type=int, default=50, help="population size")
+    parser.add_argument('-ms', type=int, default=25, help="mating pool size")
     parser.add_argument('-ts', type=int, default=7, help="tournament size")
-    parser.add_argument('-e', type=int, default=30, help="elite_size")
+    parser.add_argument('-e', type=int, default=15, help="elite_size")
     parser.add_argument('-mg', type=int, default=50, help="max generations")
     parser.add_argument('-cr', type=float, default=0.3, help="crossover rate")
     parser.add_argument('-mr', type=float, default=0.3, help="mutation rate")
@@ -192,6 +189,16 @@ def create_cities(coordinates_list):
 
 def main():
     path, population_size, mat_pool_size, tournament_size, elite_size, max_generations, crossover_rate, mutation_rate = parse_arguments()
+    #delete prints
+    print(path)
+    print(population_size) 
+    print(mat_pool_size)
+    print(tournament_size)
+    print(elite_size) 
+    print(max_generations) 
+    print(crossover_rate) 
+    print(mutation_rate)
+    #####
     coordinates_list = parse(path)
     cities_list = create_cities(coordinates_list)
     gen_algo = GeneticAlgorithm(population_size, mat_pool_size, tournament_size, elite_size, max_generations, crossover_rate, mutation_rate, cities_list)
